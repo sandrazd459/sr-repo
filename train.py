@@ -82,4 +82,4 @@ def train(model, dl, optimizer, criterion, epochs):
             torch.save(model.state_dict(), './model.pth')
     return metric
 
-train(model, dl, optimizer, criterion, 10000)
+train(model, dl, optimizer, criterion, 1000)

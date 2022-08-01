@@ -8,7 +8,7 @@ class CCA(nn.Module):
     def __init__(self, in_channels):
         super(CCA, self).__init__()
         # contrast  = summation of sd & mean
-        self.Stdv = stdv_channels
+        self.Stdv = cca_stdv
         self.Mean = nn.AdaptiveAvgPool2d(1)
         self.Conv1 = nn.Conv2d(in_channels, 4, 1, 1, 0)
         self.Conv2 = nn.Conv2d(4, 64, 1, 1, 0)
@@ -22,16 +22,15 @@ class CCA(nn.Module):
         return x * out
 
 # helper funtions
-def mean_channels(F):
-    assert(F.dim() == 4)
-    spatial_sum = F.sum(3, keepdim=True).sum(2, keepdim=True)
-    return spatial_sum / (F.size(2) * F.size(3))
+def cca_mean(input):
+    total = input.sum(3, keepdim=True).sum(2, keepdim=True)
+    return total / (input.size(2) * input.size(3))
 
-def stdv_channels(F):
-    assert(F.dim() == 4)
-    F_mean = mean_channels(F)
-    F_variance = (F - F_mean).pow(2).sum(3, keepdim=True).sum(2, keepdim=True) / (F.size(2) * F.size(3))
-    return F_variance.pow(0.5)
+def cca_stdv(input):
+    cca_m = cca_mean(input)
+    cca_variance = (input - cca_m).pow(2).sum(3, keepdim=True).sum(2, keepdim=True) / (input.size(2) * input.size(3))
+    return cca_variance.pow(0.5)
+
 
 # Figure 2
 class IMDB(nn.Module):
@@ -94,7 +93,7 @@ class IMDN(nn.Module):
         )
 
         #self.Bicubic = nn.functional.interpolate(1, scale_factor=2, mode='bilinear')
-        self.Bilinear = nn.UpsamplingBilinear2d(scale_factor=2)
+        #self.Bilinear = nn.UpsamplingBilinear2d(scale_factor=2)
     
     def forward(self, x):
         # first conv
@@ -115,8 +114,3 @@ class IMDN(nn.Module):
         #out_bicubic = self.Bilinear(x)
 
         return out #+ out_bicubic
-
-
-
-
-
