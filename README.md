@@ -1,4 +1,4 @@
-Super-Resolution using a Convolutional Neural Network
+Super-Resolution (SR)
 =====================================================
 Based on the IMDN paper [1].
 
@@ -11,5 +11,6 @@ IMDN:
 References
 ==========
 [1] [Image Super-Resolution Using Deep Convolutional Networks](https://arxiv.org/abs/1501.00092)
+
 [2] [Lightweight Image Super-Resolution with Information Multi-distillation Network](https://arxiv.org/abs/1909.118562)
 
